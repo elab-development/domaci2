@@ -67,8 +67,9 @@ app.get('/people', async (req, res) => {
   }
 });
 
+
 mongoose.connect(
-  'mongodb://mongodb2:27017/swfavorites',
+  'mongodb://127.0.0.1:27017/swfavorites',
   { useNewUrlParser: true },
   (err) => {
     if (err) {
