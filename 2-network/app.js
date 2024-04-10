@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 // MySQL connection setup
 const connection = mysql.createConnection({
-  host:  process.env.DB_HOST || '172.17.0.1',
+  host: '172.17.0.1', // Uneti naziv kontejnera koji pokreće bazu
   user: 'novi', 
   password: 'novi',
   database: 'swpreferences'
