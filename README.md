@@ -9,7 +9,7 @@ Aplikacija ima jedan UI za unos feedback-a. Nakon slanja forme aplikacija uvek k
 - **Volumes deo:** feedback se čuva kao `.txt` fajl u folderu `/app/feedback`, koji je povezan sa Docker named volume-om.
 - **Networking deo:** aplikacija komunicira sa MySQL bazom preko Docker mreže i naziva servisa `mysql-db`.
 - **Graceful fallback:** ako baza nije dostupna ili je isključena, aplikacija nastavlja da radi i čuva samo fajl.
-
+ 
 ## Struktura projekta
 
 ```text
