@@ -21,6 +21,38 @@ echo "UPLOAD OCENE ZA: $PREFIX"
 echo "======================================"
 echo ""
 
+# --------------------------------------
+# Stopiranje svih aktivnih kontejnera
+# --------------------------------------
+
+echo "1. STOPIRANJE SVIH AKTIVNIH KONTEJNERA"
+echo "--------------------------------------"
+
+RUNNING_CONTAINERS=$(docker ps -q)
+
+if [ -n "$RUNNING_CONTAINERS" ]; then
+  docker stop $RUNNING_CONTAINERS > /dev/null 2>&1
+
+  if [ $? -eq 0 ]; then
+    echo "[OK] Svi aktivni kontejneri su stopirani."
+  else
+    echo "[UPOZORENJE] Došlo je do problema prilikom stopiranja kontejnera."
+  fi
+else
+  echo "[INFO] Nema aktivnih kontejnera za stopiranje."
+fi
+
+echo ""
+echo "Napomena: kontejneri nisu obrisani, samo su stopirani."
+echo ""
+
+# --------------------------------------
+# Provera fajlova za upload
+# --------------------------------------
+
+echo "2. PROVERA FAJLOVA ZA UPLOAD"
+echo "--------------------------------------"
+
 if [ ! -f "$SUMMARY_FILE" ]; then
   echo "[GREŠKA] Nije pronađen fajl sa sumarnom proverom:"
   echo "$SUMMARY_FILE"
@@ -49,6 +81,13 @@ echo "[OK] Pronađen summary fajl: $SUMMARY_FILE"
 echo "[OK] Pronađen ZIP fajl: $ZIP_FILE"
 echo "[OK] Broj poena za upload: $GRADE"
 echo ""
+
+# --------------------------------------
+# Upload rezultata na Azure
+# --------------------------------------
+
+echo "3. UPLOAD REZULTATA NA AZURE"
+echo "--------------------------------------"
 
 read -s -p "Unesite upload šifru: " UPLOAD_SECRET
 echo ""
