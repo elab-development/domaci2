@@ -315,10 +315,12 @@ is_container_in_network() {
 # Dockerfile postoji + image kreiran
 # --------------------------------------
 
-if [ -f "Dockerfile" ] && docker image inspect "$IMG1" > /dev/null 2>&1; then
-  print_requirement_result "1" "OK" "Dockerfile postoji i image $IMG1 je kreiran."
+DOCKERFILE_PATH=$(find . -maxdepth 1 -type f -iname "dockerfile" | head -n 1)
+
+if [ -n "$DOCKERFILE_PATH" ] && docker image inspect "$IMG1" > /dev/null 2>&1; then
+  print_requirement_result "1" "OK" "Dockerfile postoji ($DOCKERFILE_PATH) i image $IMG1 je kreiran."
 else
-  print_requirement_result "1" "NIJE OK" "Nedostaje Dockerfile ili image $IMG1 nije kreiran."
+  print_requirement_result "1" "NIJE OK" "Nedostaje Dockerfile/dockerfile ili image $IMG1 nije kreiran."
 fi
 
 # --------------------------------------
@@ -497,10 +499,12 @@ mkdir -p "$ARCHIVE_DIR"
 mkdir -p "$ARCHIVE_DIR/feedback-fajlovi"
 
 # Kopiranje Dockerfile-a
-if [ -f "Dockerfile" ]; then
-  cp Dockerfile "$ARCHIVE_DIR/Dockerfile"
-  echo "[OK] Dockerfile je dodat u arhivu."
-  echo "[OK] Dockerfile je dodat u arhivu." >> "$REPORT"
+DOCKERFILE_PATH=$(find . -maxdepth 1 -type f -iname "dockerfile" | head -n 1)
+
+if [ -n "$DOCKERFILE_PATH" ]; then
+  cp "$DOCKERFILE_PATH" "$ARCHIVE_DIR/Dockerfile"
+  echo "[OK] Dockerfile je dodat u arhivu iz fajla: $DOCKERFILE_PATH"
+  echo "[OK] Dockerfile je dodat u arhivu iz fajla: $DOCKERFILE_PATH" >> "$REPORT"
 else
   echo "[UPOZORENJE] Dockerfile nije pronađen u trenutnom direktorijumu."
   echo "[UPOZORENJE] Dockerfile nije pronađen u trenutnom direktorijumu." >> "$REPORT"
