@@ -141,11 +141,12 @@ if docker container inspect "$MYSQL_CONT" > /dev/null 2>&1; then
   echo "7.1 PROVERA LOG FAJLA IZ MYSQL KONTEJNERA"
   echo "7.1 PROVERA LOG FAJLA IZ MYSQL KONTEJNERA" >> "$REPORT"
 
-  if docker exec "$MYSQL_CONT" test -f /tmp/provera_baze.log; then
-    echo "[OK] Log fajl postoji u MySQL kontejneru: /tmp/provera_baze.log"
-    echo "[OK] Log fajl postoji u MySQL kontejneru: /tmp/provera_baze.log" >> "$REPORT"
+  DB_LOG_FILE=$(docker exec "$MYSQL_CONT" sh -c "find /tmp -maxdepth 1 -type f -name '*.log' | head -n 1")
+  if [ -n "$DB_LOG_FILE" ]; then
+    echo "[OK] Log fajl postoji u MySQL kontejneru: $DB_LOG_FILE"
+    echo "[OK] Log fajl postoji u MySQL kontejneru: $DB_LOG_FILE" >> "$REPORT"
 
-    docker exec "$MYSQL_CONT" cat /tmp/provera_baze.log > "mysql-log-${PREFIX}.txt" 2>&1
+    docker exec "$MYSQL_CONT" cat "$DB_LOG_FILE" > "mysql-log-${PREFIX}.txt" 2>&1
 
     echo "[OK] Sadržaj log fajla je sačuvan u mysql-log-${PREFIX}.txt"
     echo "[OK] Sadržaj log fajla je sačuvan u mysql-log-${PREFIX}.txt" >> "$REPORT"
@@ -154,8 +155,8 @@ if docker container inspect "$MYSQL_CONT" > /dev/null 2>&1; then
       echo "[OK] Log fajl sadrži bazu feedback_db"
       echo "[OK] Log fajl sadrži bazu feedback_db" >> "$REPORT"
     else
-      echo "[UPOZORENJE] Log fajl ne sadrži bazu feedback_db"
-      echo "[UPOZORENJE] Log fajl ne sadrži bazu feedback_db" >> "$REPORT"
+      echo "[NEDOSTAJE] Nijedan .log fajl ne postoji u /tmp direktorijumu MySQL kontejnera"
+      echo "[NEDOSTAJE] Nijedan .log fajl ne postoji u /tmp direktorijumu MySQL kontejnera" >> "$REPORT"
     fi
 
     if grep -q "fuser" "mysql-log-${PREFIX}.txt"; then
@@ -393,11 +394,16 @@ fi
 # Log fajl postoji u MySQL kontejneru
 # --------------------------------------
 
-if docker container inspect "$MYSQL_CONT" > /dev/null 2>&1 \
-  && docker exec "$MYSQL_CONT" test -f /tmp/provera_baze.log; then
-  print_requirement_result "6" "OK" "Log fajl /tmp/provera_baze.log postoji u MySQL kontejneru."
+DB_LOG_FILE_SUMMARY=""
+
+if docker container inspect "$MYSQL_CONT" > /dev/null 2>&1; then
+  DB_LOG_FILE_SUMMARY=$(docker exec "$MYSQL_CONT" sh -c "find /tmp -maxdepth 1 -type f -name '*.log' | head -n 1")
+fi
+
+if [ -n "$DB_LOG_FILE_SUMMARY" ]; then
+  print_requirement_result "6" "OK" "Log fajl postoji u MySQL kontejneru: $DB_LOG_FILE_SUMMARY."
 else
-  print_requirement_result "6" "NIJE OK" "Log fajl /tmp/provera_baze.log ne postoji u MySQL kontejneru."
+  print_requirement_result "6" "NIJE OK" "Nijedan .log fajl nije pronađen u /tmp direktorijumu MySQL kontejnera."
 fi
 
 # --------------------------------------
