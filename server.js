@@ -4,9 +4,9 @@ const path = require('path');
 const { initDb, saveMetadata, getMetadata } = require('./db');
 
 const app = express();
-const PORT = Number(3001);
+const PORT_EXPOSE = Number(3001);
 const FEEDBACK_DIR = process.env.FEEDBACK_DIR || path.join(__dirname, 'feedback');
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT_EXPOSE}`;
 const os = require('os');
 const hostname = os.hostname();
 
