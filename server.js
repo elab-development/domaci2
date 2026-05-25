@@ -227,10 +227,10 @@ app.get("/api/feedback", async (req, res) => {
   }
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT_EXPOSE, async () => {
   await fs.mkdir(FEEDBACK_DIR, { recursive: true });
   const dbStatus = await initDb();
-  console.log(`Feedback app running on port ${PORT}`);
+  console.log(`Feedback app running on port ${PORT_EXPOSE}`);
   console.log(`Feedback directory: ${FEEDBACK_DIR}`);
   console.log(`Database available: ${dbStatus.available}${dbStatus.reason ? ` (${dbStatus.reason})` : ''}`);
 });
